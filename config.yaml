@@ -73,6 +73,7 @@ episodes:
 - 04-understanding-logfile.Rmd
 - 05-advanced-io-commands.Rmd
 - 06-lammps-performance.Rmd
+- 07-compile.Rmd
 
 # Information for Learners
 learners: 
