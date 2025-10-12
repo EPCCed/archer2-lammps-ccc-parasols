@@ -68,6 +68,7 @@ contact: 'r.apostolo@epcc.ed.ac.uk'
 episodes: 
 - 00-welcome.Rmd
 - 01-connecting.Rmd
+- 02-lammps-on-archer2.Rmd
 
 # Information for Learners
 learners: 
