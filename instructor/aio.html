@@ -253,6 +253,18 @@
 </div>
 <!--/div.accordion-flush-->
 
+<div class="accordion accordion-flush" id="accordionFlush3">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading3">
+        <a href="01-connecting.html">2. Connecting to ARCHER2 and transferring data</a>
+    </div>
+<!--/div.accordion-header-->
+
+  </div>
+<!--/div.accordion-item-->
+</div>
+<!--/div.accordion-flush-->
+
                 </div>
               </div>
             </div>
@@ -428,6 +440,131 @@ attendees.”</li>
 <li>“Feedback is an essential part of our training to allow us to
 continue to improve and make sure the course is as useful as possible to
 attendees.”</li>
+</ul>
+</div>
+</div>
+</div>
+<!--
+Place links that you need to refer to multiple times across pages here. Delete
+any links that you are not going to use.
+ -->
+</section></section><section id="aio-01-connecting"><p>Content from <a href="01-connecting.html">Connecting to ARCHER2 and transferring data</a></p>
+<hr>
+<p>Last updated on 2025-10-12 |
+
+        <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/01-connecting.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 5 minutes</p>
+<div class="text-end">
+          <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
+        </div>
+<div class="overview card">
+<h2 class="card-header">Overview</h2>
+<div class="row g-0">
+<div class="col-md-4">
+<div class="card-body">
+<div class="inner">
+<h3 class="card-title">Questions</h3>
+<ul>
+<li>“How can I access ARCHER2 interactively?”</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-md-8">
+<div class="card-body">
+<div class="inner bordered">
+<h3 class="card-title">Objectives</h3>
+<ul>
+<li>“Understand how to connect to ARCHER2.”</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section><h2 class="section-heading" id="purpose">Purpose<a class="anchor" aria-label="anchor" href="#purpose"></a>
+</h2>
+<hr class="half-width">
+<p>Attendees of this course will get access to the ARCHER2 HPC facility.
+You will have the ability to request an account and to login to ARCHER2
+before the course begins. In this session, we will talk you through
+getting access to ARCHER2. Please be aware that you will need to follow
+the <a href="https://www.archer2.ac.uk/training/code-of-conduct/" class="external-link">ARCHER2 Code
+of Conduct</a> as a condition for access.</p>
+<p>Note that if you are not able to login to ARCHER2 and do not attend
+this session, you may struggle to run the course exercises as these were
+designed to run on ARCHER2 specifically.</p>
+</section><section><h2 class="section-heading" id="connecting-using-ssh">Connecting using SSH<a class="anchor" aria-label="anchor" href="#connecting-using-ssh"></a>
+</h2>
+<hr class="half-width">
+<p>The ARCHER2 login address is</p>
+<div class="codewrapper sourceCode" id="cb1">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">login.archer2.ac.uk</span></span></code></pre>
+</div>
+<p>Access to ARCHER2 is via SSH using <strong>both</strong> a password
+and a passphrase-protected SSH key pair.</p>
+</section><section><h2 class="section-heading" id="passwords-and-password-policy">Passwords and password policy<a class="anchor" aria-label="anchor" href="#passwords-and-password-policy"></a>
+</h2>
+<hr class="half-width">
+<p>When you first get an ARCHER2 account, you will get a single-use
+password from the SAFE which you will be asked to change to a password
+of your choice. Your chosen password must have the required complexity
+as specified in the <a href="https://www.archer2.ac.uk/about/policies/passwords_usernames.html" class="external-link">ARCHER2
+Password Policy</a>.</p>
+<p>The password policy has been chosen to allow users to use both
+complex, shorter passwords and long, but comparatively simple passwords.
+For example, passwords in the style of both <code>LA10!£lsty</code> and
+<code>correcthorsebatterystaple</code> would be supported.</p>
+</section><section><h2 class="section-heading" id="ssh-keys">SSH keys<a class="anchor" aria-label="anchor" href="#ssh-keys"></a>
+</h2>
+<hr class="half-width">
+<p>As well as password access, users are required to add the public part
+of an SSH key pair to access ARCHER2. The public part of the key pair is
+associated with your account using the SAFE web interface. See the
+ARCHER2 User and Best Practice Guide for information on how to create
+SSH key pairs and associate them with your account:</p>
+<ul>
+<li><a href="https://docs.archer2.ac.uk/user-guide/connecting/" class="external-link">Connecting to
+ARCHER2</a></li>
+</ul></section><section><h2 class="section-heading" id="mfatotp">MFA/TOTP<a class="anchor" aria-label="anchor" href="#mfatotp"></a>
+</h2>
+<hr class="half-width">
+<p>Multi-factor authentication, under the form of timed one-time
+passwords, are now mandatory on ARCHER2 accounts. To create one, please
+follow the instructions in our <a href="https://docs.archer2.ac.uk/user-guide/connecting/#mfa-time-based-one-time-passcode-totp-code" class="external-link">SAFE
+documentation</a>.</p>
+</section><section><h2 class="section-heading" id="data-transfer-services-scp-rsync">Data transfer services: scp, rsync<a class="anchor" aria-label="anchor" href="#data-transfer-services-scp-rsync"></a>
+</h2>
+<hr class="half-width">
+<p>ARCHER2 supports a number of different data transfer mechanisms. The
+one you choose depends on the amount and structure of the data you want
+to transfer and where you want to transfer the data to. The two main
+options are:</p>
+<ul>
+<li>
+<code>scp</code>: The standard way to transfer small to medium
+amounts of data off ARCHER2 to any other location</li>
+<li>
+<code>rsync</code>: Used if you need to keep small to medium
+data-sets synchronised between two different locations</li>
+</ul>
+<p>More information on data transfer mechanisms can be found in the
+ARCHER2 User and Best Practice Guide:</p>
+<ul>
+<li><a href="https://docs.archer2.ac.uk/user-guide/data/" class="external-link">Data
+management and transfer</a></li>
+</ul>
+<div id="keypoints1" class="callout keypoints">
+<div class="callout-square">
+<i class="callout-icon" data-feather="key"></i>
+</div>
+<span class="callout-header">Key Points</span>
+<div class="callout-inner">
+<div class="callout-content">
+<ul>
+<li>“ARCHER2’s login address is <code>login.archer2.ac.uk</code>.”</li>
 </ul>
 </div>
 </div>
