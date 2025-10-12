@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Slurm job options (name, number of compute nodes, job time)
+#SBATCH --job-name=lmp_ex1
+#SBATCH --nodes=1
+#SBATCH --time=0:10:0
+#SBATCH --hint=nomultithread
+#SBATCH --distribution=block:block
+#SBATCH --tasks-per-node=64
+#SBATCH --cpus-per-task=1
+
+# The budget code of the project
+#SBATCH --account=ta215
+# Standard partition
+#SBATCH --partition=standard
+# Short QoS since our runtime is under 20m
+#SBATCH --qos=short
+
+# load the lammps module
+module load lammps
+
+# Set the number of threads to 1
+#   This prevents any threaded system libraries from automatically
+#   using threading.
+export OMP_NUM_THREADS=1
+
+# Launch the parallel job
+srun lmp -i in.ethanol -l log.${SLURM_NPROCS}_cpus

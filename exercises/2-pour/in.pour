@@ -1,0 +1,99 @@
+# Pour two types of granular particles into a container
+
+############################
+# 1) Set up simulation box #
+############################
+
+units           lj
+# Sphere atom style incluydes per-atom radius and angular velocity
+atom_style      sphere
+# Periodic boundaries in the x and y directions
+# and fixed boundary in the z direction, i.e., fixed wall
+dimension       3
+boundary        p p f
+# Ghost atoms need to know velocity, as granular interactions depend on velocity
+comm_modify     vel yes
+
+# Create region where particles will exist
+region          reg block -20 20 -20 20 0 40
+create_box      2 reg
+
+########################################
+# 2) Define interparticle interactions #
+########################################
+
+# granular pair style
+pair_style      granular
+# interactions betwee particles 1-1 and 1-2 uses a Johnson-Kendall-Roberts model,
+# while 2-2 is a herts model.
+# parameters are then E (effective Young modulus), eta_n0 (damping prefactor or coefficient restitution)
+# nu (Poisson's ratio), and gamma (surface energy density)
+# pair_coefficients are expanded with a tangential contact model, with parameters:
+# kt (tangential stiffness coefficient), x_{gamma,t} (multiplier of normal damping), mu_s (tangential friction coefficient)
+# rolling keyword is optional, "none" or "sds" supported
+# parameters: k_roll, gamma_roll, mu_roll, see documentation for more details
+# twisting keyword is optional, "none", "sds", and "marshall" supported, see documentation for more details.
+pair_coeff      1 * jkr 1000.0 50.0 0.3 10 tangential mindlin 800.0 1.0 0.5 rolling sds 500.0 200.0 0.5 twisting marshall
+pair_coeff      2 2 hertz 200.0 20.0 tangential linear_history 300.0 1.0 0.1 rolling sds 200.0 100.0 0.1 twisting marshall
+
+######################
+# 3) Neighbour lists #
+######################
+
+# setup "skin" value for neighbour lists
+neighbor        0.3 bin
+# modify how often the neighbour lists are updated
+neigh_modify    delay 10 every 1
+
+###################################
+# 4) Define simulation parameters #
+###################################
+
+
+# to update angular velocity from particle torque, use nve/sphere
+fix             1 all nve/sphere
+# turn on gravity
+fix             grav all gravity 9.8 vector 0 0 -1
+
+#####################
+# 5) Pour particles #
+#####################
+
+# create regions where new particles will be created
+# parameters: direction of axis, coords of axis in other 2 dimensions, radius, axis-coord of low and high face
+region          cyl1 cylinder z -10  9 10 20 35
+region          cyl2 cylinder z  10 -9 10 20 35
+
+
+# pour particles in regions specified above - up  to 10000 particles
+#               ID   group-id style n_part type seed kw     region_id kw   d_style min_diam max_diam kw   min_dens max_dens
+fix             ins1 all      pour  10000  1    3123 region cyl1      diam range   0.5      1        dens 1.0      1.0
+fix             ins2 all      pour  10000  2    3123 region cyl2      diam range   0.5      1        dens 1.0      1.0
+
+# define bottom wall, in this case with no cohesion
+fix             2 all wall/gran granular hertz/material 1e5 1e3 0.3 tangential mindlin NULL 1.0 0.5 zplane 0 NULL
+
+##################
+# 6) Final setup #
+##################
+
+# set size of timestep (in units defined in the "units" command)
+timestep        0.001
+
+# define output for logfile
+thermo_style    custom step atoms
+# by default, LAMMPS terminates with error if a particle is "lost"
+# This option disables this behaviour
+thermo_modify   lost ignore
+# Set frequency of output to logfile
+thermo          100
+
+
+# output style for Ovito
+dump            1 all custom 100 dump.pour id type radius mass x y z
+
+# output style for VTK
+#dump            2 all vtk 100 pour*.vtk id type radius mass x y z
+#dump_modify     2 binary yes
+
+run             10000
