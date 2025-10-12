@@ -265,6 +265,18 @@
 </div>
 <!--/div.accordion-flush-->
 
+<div class="accordion accordion-flush" id="accordionFlush4">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading4">
+        <a href="02-lammps-on-archer2.html">3. An introduction to LAMMPS on ARCHER2</a>
+    </div>
+<!--/div.accordion-header-->
+
+  </div>
+<!--/div.accordion-item-->
+</div>
+<!--/div.accordion-flush-->
+
                 </div>
               </div>
             </div>
@@ -567,6 +579,496 @@ management and transfer</a></li>
 <div class="callout-content">
 <ul>
 <li>“ARCHER2’s login address is <code>login.archer2.ac.uk</code>.”</li>
+</ul>
+</div>
+</div>
+</div>
+<!--
+Place links that you need to refer to multiple times across pages here. Delete
+any links that you are not going to use.
+ -->
+</section></section><section id="aio-02-lammps-on-archer2"><p>Content from <a href="02-lammps-on-archer2.html">An introduction to LAMMPS on ARCHER2</a></p>
+<hr>
+<p>Last updated on 2025-10-12 |
+
+        <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/02-lammps-on-archer2.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 45 minutes</p>
+<div class="text-end">
+          <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
+        </div>
+<div class="overview card">
+<h2 class="card-header">Overview</h2>
+<div class="row g-0">
+<div class="col-md-4">
+<div class="card-body">
+<div class="inner">
+<h3 class="card-title">Questions</h3>
+<ul>
+<li>“What is LAMMPS?”</li>
+<li>“How do I run jobs in ARCHER2?”</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-md-8">
+<div class="card-body">
+<div class="inner bordered">
+<h3 class="card-title">Objectives</h3>
+<ul>
+<li>“Understand what LAMMPS is.”</li>
+<li>“Learn how to launch jobs on ARCHER2 using the slurm batch
+system.”</li>
+<li>“Run a LAMMPS benchmark exercise to see how benchmarking can help
+improve code performance.”</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section><h2 class="section-heading" id="archer2-system-overview">ARCHER2 system overview<a class="anchor" aria-label="anchor" href="#archer2-system-overview"></a>
+</h2>
+<hr class="half-width">
+<div class="section level3">
+<h3 id="architecture">Architecture<a class="anchor" aria-label="anchor" href="#architecture"></a>
+</h3>
+<p>The ARCHER2 HPE Cray EX system consists of a number of different node
+types. The ones visible to users are:</p>
+<ul>
+<li>Login nodes</li>
+<li>Compute nodes</li>
+<li>Data analysis (pre-/post- processing) nodes</li>
+</ul>
+<p>All of the non-GPU node types have the same processors: AMD
+EPYC<sup>TM</sup> 7742, 2.25GHz, 64-cores. All non-GPU nodes are dual
+socket nodes so there are 128 cores per node.</p>
+<figure><img src="../fig/archer2_architecture.png" alt="Image explaining the archer2 hardware Architecture" class="figure mx-auto d-block"><div class="figcaption">ARCHER2 Architecture</div>
+</figure>
+</div>
+<div class="section level3">
+<h3 id="compute-nodes">Compute nodes<a class="anchor" aria-label="anchor" href="#compute-nodes"></a>
+</h3>
+<p>There are 5,860 CPU compute nodes in total, giving 750,080 compute
+cores on the full ARCHER2 system. There are also 4 GPU nodes for
+software development. Most of these (5,276 nodes) have 256 GiB memory
+per node, a smaller number (584 nodes) have 512 GiB memory per node. All
+of the compute nodes are linked together using the high-performance HPE
+Slingshot interconnect.</p>
+<p>Access to the compute nodes is controlled by the Slurm scheduling
+system which supports both batch jobs and interactive jobs.</p>
+<p>Compute node summary:</p>
+<table class="table">
+<colgroup>
+<col width="16%">
+<col width="37%">
+<col width="45%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th>CPU Nodes</th>
+<th>GPU Nodes</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Processors</td>
+<td>2x AMD EPYC Zen2 (Rome) 7742, 2.25 GHz, 64-core</td>
+<td>1x AMD EPYC Zen3 7543P (Milan), 2.8GHz, 32-core</td>
+</tr>
+<tr class="even">
+<td>Cores per node</td>
+<td>128</td>
+<td>32</td>
+</tr>
+<tr class="odd">
+<td>NUMA</td>
+<td>8 NUMA regions per node, 16 cores per NUMA region</td>
+<td>4 NUMA regions, 8 cores per NUMA region</td>
+</tr>
+<tr class="even">
+<td>Memory Capacity</td>
+<td>256/512 GiB DDR4 3200MHz, 8 memory channels</td>
+<td>512 GiB DDR4 3200MHz, 8 memory channels</td>
+</tr>
+<tr class="odd">
+<td>Memory Bandwidth</td>
+<td>&gt;380 GB/s per node</td>
+<td>40 GB/s (Host-Device), 80GB/s (Device-Device)</td>
+</tr>
+<tr class="even">
+<td>Interconnect Bandwidth</td>
+<td>25 GB/s per node bi-directional</td>
+<td>25 GB/s per node bi-directional</td>
+</tr>
+<tr class="odd">
+<td>Accelerators</td>
+<td>None</td>
+<td>4x AMD Instinct MI210, 104 compute units, 64GiB HBM2e memory</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="storage">Storage<a class="anchor" aria-label="anchor" href="#storage"></a>
+</h3>
+<p>There are four different storage systems available on the current
+ARCHER2 service:</p>
+<ul>
+<li>Home file systems: <code>/home</code>
+</li>
+<li>Work file systems: <code>/work</code>
+</li>
+<li>Solid-state file system (scratch): <code>/scratch-nvme</code>
+</li>
+<li>RDF as a Service (RDFaaS): <code>/epsrc</code>
+</li>
+</ul>
+</div>
+</section><section><h2 class="section-heading" id="what-is-lammps">What is LAMMPS?<a class="anchor" aria-label="anchor" href="#what-is-lammps"></a>
+</h2>
+<hr class="half-width">
+<p>LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator) is
+a versatile classical molecular dynamics software package that has been
+extended to be useful to many other domains, including coarse-grained
+MD, discrete element method, hydrodynamics, lattice boltzmann,
+peridynamics, etc. It is developed by Sandia National Laboratories and
+by its wide user-base under GPLv2.</p>
+<p>It can be downloaded from the <a href="https://lammps.sandia.gov/download.html" class="external-link">LAMMPS website</a></p>
+<p>Everything we are covering today (and a lot of other info) can be
+found in the <a href="https://lammps.sandia.gov/doc/Manual.html" class="external-link">LAMMPS
+User Manual</a></p>
+</section><section><h2 class="section-heading" id="using-a-lammps-module-on-archer2">Using a LAMMPS module on ARCHER2<a class="anchor" aria-label="anchor" href="#using-a-lammps-module-on-archer2"></a>
+</h2>
+<hr class="half-width">
+<p>ARCHER2 uses a module system. In general, you can run LAMMPS on
+ARCHER2 by using the LAMMPS module. You can use the
+<code>module spider</code> command to list all available versions of a
+module, and their dependencies:</p>
+<div class="codewrapper sourceCode" id="cb1">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">user@ln01:~</span><span class="op">&gt;</span> module spider lammps</span></code></pre>
+</div>
+<div class="codewrapper">
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="output" tabindex="0"><code>---------------------------------------------------------------------
+  lammps:
+---------------------------------------------------------------------
+     Versions:
+        lammps/2Aug2024-GPU
+        lammps/13Feb2024
+        lammps/15Dec2023
+        lammps/17Feb2023
+        lammps/29Aug2024
+     Other possible modules matches:
+        cpl-lammps  cpl-openfoam-lammps  lammps-gpu  lammps-python
+
+----------------------------------------------------------------------
+  To find other possible module matches execute:
+
+      $ module -r spider '.*lammps.*'
+
+----------------------------------------------------------------------
+  For detailed information about a specific "lammps" package
+  (including how to load the modules) use the module's full name.
+  Note that names that have a trailing (E) are extensions provided
+  by other modules.
+  For example:
+
+     $ module spider lammps/29Aug2024
+----------------------------------------------------------------------</code></pre>
+</div>
+<p>Running <code>module load lammps</code> will set up your environment
+to use the default LAMMPS module on ARCHER2. For this course, we will be
+using the 29 August, 2024 version of LAMMPS:</p>
+<div class="codewrapper sourceCode" id="cb3">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">module</span> load lammps/29Aug2024</span></code></pre>
+</div>
+<p>Once your environment is set up, you will have access to the
+<code>lmp</code> LAMMPS executable. Note that you will only be able to
+run this on a single core on the ARCHER2 login node.</p>
+</section><section><h2 class="section-heading" id="running-lammps-on-archer2-compute-nodes">Running LAMMPS on ARCHER2 compute nodes<a class="anchor" aria-label="anchor" href="#running-lammps-on-archer2-compute-nodes"></a>
+</h2>
+<hr class="half-width">
+<p>We will now launch a first LAMMPS job from the compute nodes. The
+login nodes are shared resources on which we have limited the amount of
+cores that can be used for a job. To run LAMMPS simulations on a large
+number of cores, we must use the compute nodes.</p>
+<p>The <code>/home</code> file system is not accessible from the compute
+nodes. As such, we will need to submit our jobs from the
+<code>/work</code> directory. Every user has a directory in
+<code>/work</code> associated to their project code. For this course,
+the project code is <code>ta215</code>, so we all have a directory
+called: <code>/work/ta215/ta215/&lt;username&gt;</code> (make sure to
+replace <code>username</code> with your username).</p>
+<p>We have prepared a number of exercises for today. You can either
+download these by either:</p>
+<div class="section level3">
+<h3 id="using-git">Using <code>git</code>
+<a class="anchor" aria-label="anchor" href="#using-git"></a>
+</h3>
+<div class="codewrapper sourceCode" id="cb4">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/EPCCed/archer2-lammps-ccc-parasols.git</span></code></pre>
+</div>
+<p>and then navigating to the <code>exercises folder</code> with:</p>
+<div class="codewrapper sourceCode" id="cb5">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="bu">cd</span> archer2-archer2-lammps-ccc-parasols/exercises</span></code></pre>
+</div>
+</div>
+<div class="section level3">
+<h3 id="copy-from-workta215shared">Copy from <code>/work/ta215/shared</code>
+<a class="anchor" aria-label="anchor" href="#copy-from-workta215shared"></a>
+</h3>
+<p>or by copying it from the shared part of the <code>ta215</code>
+project directory:</p>
+<div class="codewrapper sourceCode" id="cb6">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> /work/ta215/shared/exercises ./</span></code></pre>
+</div>
+</div>
+<div class="section level3">
+<h3 id="exercise-1">Exercise 1<a class="anchor" aria-label="anchor" href="#exercise-1"></a>
+</h3>
+<p>For this session, we’ll be looking at
+<code>exercises/1-performance-exercise/</code>.</p>
+<p>In this directory you will find three files:</p>
+<ul>
+<li>
+<code>sub.slurm</code> is a Slurm submission script. This will let
+you submit jobs to the compute nodes. As written, it will run a
+single-core job but we will be editing it to run on more cores.</li>
+<li>
+<code>in.ethanol</code> is the LAMMPS input script that we will be
+using for this exercise. This script will run a small simulation of 125
+ethanol molecules.</li>
+<li>
+<code>data.ethanol</code> is a LAMMPS data file for a single ethanol
+molecule. This single molecule will be replicated by LAMMPS to generate
+the system inside the simulation box.</li>
+</ul>
+<div id="why-ethanol" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="why-ethanol" class="callout-inner">
+<h3 class="callout-title">Why ethanol?</h3>
+<div class="callout-content">
+<p>The <code>in.ethanol</code> LAMMPS input that we are using for this
+exercise is an easily edited benchmark script used within EPCC to test
+system performance. The intention of this script is to be easy to edit
+and alter when running on varied core/node counts. By editing the
+<code>X_LENGTH</code>, <code>Y_LENGTH</code>, and <code>Z_LENGTH</code>
+variables, you can increase the box size substantially. As to the choice
+of molecule, we wanted something small and with partial charges –
+ethanol seemed to fit both of those.</p>
+</div>
+</div>
+</div>
+<p>You can submit your first job on ARCHER2 by running:</p>
+<div class="codewrapper sourceCode" id="cb7">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">sbatch</span> sub.slurm</span></code></pre>
+</div>
+<p>You can check the progress of your job by running
+<code>squeue --me</code>. Your job state will go from <code>PD</code>
+(pending) to <code>R</code> (running) to <code>CG</code> (cancelling).
+Once your job is complete, it will have produced a file called
+<code>slurm-####.out</code>, which contains the standard output and
+standard error produced by your job.</p>
+</div>
+</section><section><h2 class="section-heading" id="a-brief-overview-of-the-lammps-log-file">A brief overview of the LAMMPS log file<a class="anchor" aria-label="anchor" href="#a-brief-overview-of-the-lammps-log-file"></a>
+</h2>
+<hr class="half-width">
+<p>The job will also produce a LAMMPS log file <code>log.64_cpus</code>.
+The name of the file will change when the number of tasks requested in
+slurm are changed in the <code>sub.slurm</code> file. In this file, you
+will find all of the thermodynamic outputs that were specified in the
+LAMMPS <code>thermo_style</code>, as well as some very useful
+performance information! We will explore the LAMMPS log file in more
+details later but, for now, we will concentrate on the LAMMPS
+performance information output at the end of the log file. This will
+help us to understand what our simulation is doing, and where we can
+speed it up.</p>
+<p>Running:</p>
+<div class="codewrapper sourceCode" id="cb8">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-n</span> 28 log.64_cpus</span></code></pre>
+</div>
+<div class="codewrapper">
+<h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="output" tabindex="0"><code>Performance: 12.825 ns/day, 1.871 hours/ns, 148.442 timesteps/s
+100.0% CPU use with 64 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.00020468 | 0.30021    | 2.1814     | 117.6 |  4.44
+Bond    | 0.00014519 | 0.044983   | 0.2835     |  39.4 |  0.67
+Kspace  | 0.43959    | 2.4307     | 2.7524     |  43.8 | 35.98
+Neigh   | 3.608      | 3.6659     | 3.7229     |   1.9 | 54.27
+Comm    | 0.091376   | 0.26108    | 0.34751    |  12.6 |  3.87
+Output  | 0.0028102  | 0.0029118  | 0.003015   |   0.1 |  0.04
+Modify  | 0.011717   | 0.045059   | 0.19911    |  23.7 |  0.67
+Other   |            | 0.004113   |            |       |  0.06
+
+Nlocal:        102.516 ave         650 max           0 min
+Histogram: 44 12 0 0 0 0 0 1 1 6
+Nghost:        922.078 ave        2505 max         171 min
+Histogram: 8 24 0 7 17 0 0 0 2 6
+Neighs:        18165.4 ave      136714 max           0 min
+Histogram: 54 2 0 0 0 0 0 1 2 5
+
+Total # of neighbors = 1162584
+Ave neighs/atom = 177.19616
+Ave special neighs/atom = 7.3333333
+Neighbor list builds = 1000
+Dangerous builds not checked
+Total wall time: 0:00:13</code></pre>
+</div>
+<p>The ultimate aim is always to get your simulation to run in a
+sensible amount of time. This often simply means trying to optimise the
+final value (“Total wall time”), though some people care more about
+optimising efficiency (wall time multiplied by core count).</p>
+</section><section><h2 class="section-heading" id="increasing-computational-resources">Increasing computational resources<a class="anchor" aria-label="anchor" href="#increasing-computational-resources"></a>
+</h2>
+<hr class="half-width">
+<p>The first approach that most people take to increase the speed of
+their simulations is to increase the computational resources. If your
+system can accommodate this, doing this can sometimes lead to “easy”
+improvements. However, this usually comes at an increased cost (if
+running on a system for which compute is charged) and does not always
+lead to the desired results.</p>
+<p>In your first run, LAMMPS was run on 64 cores. For a large enough
+system, increasing the number of cores used should reduce the total run
+time. In your <code>sub.slurm</code> file, you can edit the number of
+tasks in the line:</p>
+<div class="codewrapper sourceCode" id="cb10">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co">#SBATCH --tasks-per-node=64</span></span></code></pre>
+</div>
+<p>to run on a different number of cores. An ARCHER2 node has 128 cores,
+so you can run LAMMPS on up to 128 cores.</p>
+<div id="quick-benchmark" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<span class="callout-header">Challenge</span>
+<div id="quick-benchmark" class="callout-inner">
+<h3 class="callout-title">Quick benchmark</h3>
+<div class="callout-content">
+<p>As a first exercise, fill in the table below.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Number of cores</th>
+<th>Wall time</th>
+<th>Performance (ns/day)</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>16</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>32</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>64</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>128</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Do you spot anything unusual in these run times? If so, can you
+explain this strange result?</p>
+</div>
+</div>
+</div>
+<div id="accordionSolution1" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
+  <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
+</button>
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div class="accordion-body">
+<p>The simulation takes almost the same amount of time when running on a
+single core as when running on two cores. A more detailed look into the
+<code>in.ethanol</code> file will reveal that this is because the
+simulation box is not uniformly packed. We won’t go into all the details
+in this course, but we do cover most of the available optimisations in
+the advanced course.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="note" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="note" class="callout-inner">
+<h3 class="callout-title">Note</h3>
+<div class="callout-content">
+<p>Here we are only considering MPI parallelisation. LAMMPS offers the
+option to run using joint MPI+OpenMP (more on that on the advanced
+LAMMPS course), but for the exercises in this lesson, we will only be
+considering MPI.</p>
+</div>
+</div>
+</div>
+<div id="keypoints1" class="callout keypoints">
+<div class="callout-square">
+<i class="callout-icon" data-feather="key"></i>
+</div>
+<span class="callout-header">Key Points</span>
+<div class="callout-inner">
+<div class="callout-content">
+<ul>
+<li>“LAMMPS is a versatile software used in a wide range of subjects to
+run classical molecular dynamics simulations.”</li>
+<li>“Running jobs on ARCHER2 requires a submission to the Slurm batch
+system using specific account, budget, queue, and qos keywords.”</li>
+<li>“Adding more cores is not always the most effective way of
+increasing performance.”</li>
 </ul>
 </div>
 </div>
