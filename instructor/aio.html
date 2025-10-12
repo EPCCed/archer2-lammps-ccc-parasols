@@ -337,6 +337,18 @@
 </div>
 <!--/div.accordion-flush-->
 
+<div class="accordion accordion-flush" id="accordionFlush10">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading10">
+        <a href="08-lammps-python.html">9. Running LAMMPS through Python</a>
+    </div>
+<!--/div.accordion-header-->
+
+  </div>
+<!--/div.accordion-item-->
+</div>
+<!--/div.accordion-flush-->
+
                 </div>
               </div>
             </div>
@@ -2015,7 +2027,7 @@ that rotates the drum at different speeds, for example, 5000, 10000, and
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <div class="codewrapper">
 <h3 class="code-label">OUTPUT<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
@@ -2663,6 +2675,134 @@ repository:</p>
 <div class="callout-content">
 <ul>
 <li>“Compiling LAMMPS with CMake is easy and quick on ARCHER2”</li>
+</ul>
+</div>
+</div>
+</div>
+<!--
+Place links that you need to refer to multiple times across pages here. Delete
+any links that you are not going to use.
+ -->
+</div>
+</section></section><section id="aio-08-lammps-python"><p>Content from <a href="08-lammps-python.html">Running LAMMPS through Python</a></p>
+<hr>
+<p>Last updated on 2025-10-12 |
+
+        <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/08-lammps-python.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 30 minutes</p>
+<div class="text-end">
+          <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
+        </div>
+<div class="overview card">
+<h2 class="card-header">Overview</h2>
+<div class="row g-0">
+<div class="col-md-4">
+<div class="card-body">
+<div class="inner">
+<h3 class="card-title">Questions</h3>
+<ul>
+<li>“How can I run LAMMPS from within Python?”</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-md-8">
+<div class="card-body">
+<div class="inner bordered">
+<h3 class="card-title">Objectives</h3>
+<ul>
+<li>“Know how run a LAMMPS simulation through Python.”</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section><h2 class="section-heading" id="running-lammps-through-python">Running LAMMPS through Python<a class="anchor" aria-label="anchor" href="#running-lammps-through-python"></a>
+</h2>
+<hr class="half-width">
+<p>Running LAMMPS through Python is quite a simple task: you can import
+the LAMMPS Python library, start the LAMMPS environment, and run a
+LAMMPS simulation by running the following commands:</p>
+<div class="codewrapper sourceCode" id="cb1">
+<h3 class="code-label">PYTHON<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode python" tabindex="0"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="im">from</span> lammps <span class="im">import</span> lammps</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    lmp <span class="op">=</span> lammps()</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    lmp.<span class="bu">file</span>(<span class="st">"in.pour"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">'__main__'</span>:</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    main()</span></code></pre>
+</div>
+<p>Python will use the shared LAMMPS libraries to run this. Under the
+hood, LAMMPS runs the same processes as it would if the script was run
+directly through the LAMMPS executable, and jobs run with Python will
+run in comparable times.</p>
+<p>One of the main advantages of running LAMMPS through Python is that
+it allows you to make use of Python’s dynamic programming. Also, while
+LAMMPS offers a large amount of options for writing scripts (via
+e.g. <code>variables</code> definition, <code>jump</code> commands and
+<code>if</code> statements), these are not as intuitive to a lot of
+users as a Python interface.</p>
+<div class="section level3">
+<h3 id="exercise">Exercise<a class="anchor" aria-label="anchor" href="#exercise"></a>
+</h3>
+<p>We have prepared an example on how to call LAMMPS from python. To
+access this, please <code>cd exercises/6-python/</code>. In this
+directory you will find three files:</p>
+<ul>
+<li>
+<code>in.drum</code> is the LAMMPS input file adapted from an
+earlier exercise with a rotating drum.</li>
+<li>
+<code>lammps_drum.py</code> is a Python script that initially runs
+the simulation defined in the <code>in.drum</code> LAMMPS configuration
+file. Once that is complete, the script will launch a series of
+simulations run with changing rotating drum speeds</li>
+<li>
+<code>sub.slurm</code> is the Slurm submission script for running
+this simulation on the ARCHER2 compute nodes.</li>
+</ul>
+<p>You can submit this simulation to the queue by running:</p>
+<div class="codewrapper sourceCode" id="cb2">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">sbatch</span> sub.slurm</span></code></pre>
+</div>
+<p>One disadvantage of using the LAMMPS python module is that debugging
+can be more complicated when things go wrong. There are more moving
+parts than with the LAMMPS executable, and it can often be difficult to
+trace back errors and attribute them correctly to LAMMPS, Python, or the
+interface.</p>
+<div id="callout1" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div class="callout-inner">
+<div class="callout-content">
+<blockquote>
+<p>The LAMMPS python module has a number of other features and variables
+that can be called to improve your use of LAMMPS through Python. You can
+find more information about this in the <a href="https://docs.lammps.org/Python_module.html" class="external-link">LAMMPS manual</a>.</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="keypoints1" class="callout keypoints">
+<div class="callout-square">
+<i class="callout-icon" data-feather="key"></i>
+</div>
+<span class="callout-header">Key Points</span>
+<div class="callout-inner">
+<div class="callout-content">
+<ul>
+<li>“Running LAMMPS through Python can have certain advantages.”</li>
+<li>“However, finding the root cause of problems when things go wrong is
+harder to do when running LAMMPS through Python rather than through a
+LAMMPS executable.”</li>
 </ul>
 </div>
 </div>
