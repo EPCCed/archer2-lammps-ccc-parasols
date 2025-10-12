@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/00-welcome.html</loc>
+  </url>
+  <url>
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/01-introduction.html</loc>
   </url>
   <url>
@@ -20,6 +23,9 @@
   </url>
   <url>
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/index.html</loc>
+  </url>
+  <url>
+    <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/00-welcome.html</loc>
   </url>
   <url>
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/01-introduction.html</loc>
