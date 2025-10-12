@@ -2,7 +2,6 @@
 title: "Understanding the logfile"
 teaching: 30
 exercises: 0
-- "Performance data at the end of a logfile can give us insights into how to make a simulation faster."
 ---
 :::::::::::::::::::::::::::::::::::::: questions
 
@@ -177,5 +176,6 @@ Total wall time: 0:00:28
 :::::::::::::::::::::::::::::::::::::: keypoints
 
 - "Thermodynamic information outputted by LAMMPS can be used to track whether a simulations is running OK."
+- "Performance data at the end of a logfile can give us insights into how to make a simulation faster."
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
