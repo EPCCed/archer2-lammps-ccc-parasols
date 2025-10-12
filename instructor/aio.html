@@ -277,6 +277,18 @@
 </div>
 <!--/div.accordion-flush-->
 
+<div class="accordion accordion-flush" id="accordionFlush5">
+  <div class="accordion-item">
+    <div class="accordion-header" id="flush-heading5">
+        <a href="03-simulation-setup.html">4. Setting up a simulation in LAMMPS</a>
+    </div>
+<!--/div.accordion-header-->
+
+  </div>
+<!--/div.accordion-item-->
+</div>
+<!--/div.accordion-flush-->
+
                 </div>
               </div>
             </div>
@@ -1028,7 +1040,7 @@ explain this strange result?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
 <div class="accordion-body">
 <p>The simulation takes almost the same amount of time when running on a
 single core as when running on two cores. A more detailed look into the
@@ -1077,6 +1089,370 @@ increasing performance.”</li>
 Place links that you need to refer to multiple times across pages here. Delete
 any links that you are not going to use.
  -->
+</section></section><section id="aio-03-simulation-setup"><p>Content from <a href="03-simulation-setup.html">Setting up a simulation in LAMMPS</a></p>
+<hr>
+<p>Last updated on 2025-10-12 |
+
+        <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/03-simulation-setup.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
+<p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 60 minutes</p>
+<div class="text-end">
+          <button role="button" aria-pressed="false" tabindex="0" id="expand-code" class="pull-right" data-expand="Expand All Solutions " data-collapse="Collapse All Solutions "> Expand All Solutions <i aria-hidden="true" data-feather="plus"></i></button>
+        </div>
+<div class="overview card">
+<h2 class="card-header">Overview</h2>
+<div class="row g-0">
+<div class="col-md-4">
+<div class="card-body">
+<div class="inner">
+<h3 class="card-title">Questions</h3>
+<ul>
+<li>“How do we setup a simulation in LAMMPS?”</li>
+<li>“What do all the commands in the input file mean?”</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="col-md-8">
+<div class="card-body">
+<div class="inner bordered">
+<h3 class="card-title">Objectives</h3>
+<ul>
+<li>“Understand the commands, keywords, and parameters necessary to
+setup a LAMMPS simulation.”</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section><h2 class="section-heading" id="intro-to-lammps-simulations">Intro to LAMMPS simulations<a class="anchor" aria-label="anchor" href="#intro-to-lammps-simulations"></a>
+</h2>
+<hr class="half-width">
+<p>LAMMPS uses text files as input files that control the setup and flow
+of a simulation, and a variety of file types (and other methods) initial
+system for topologies.</p>
+<p>Whether the simulation to run is MD or DEM, LAMMPS applies Newton’s
+laws of motion to systems of particles that can range in size from
+atoms, course-grained moieties, entire molecules, or even grains of
+sand. In practical terms, the movement of the particles is calculated by
+the simple repeating loop:</p>
+<ol style="list-style-type: decimal">
+<li>Take the initial positions of the particles in the simulation box
+and calculate the total force that is applied to each particle, using
+the chosen force-field.</li>
+<li>Use the calculated forces to calculate the acceleration to add to
+each particle.</li>
+<li>Use the acceleration to calculate the new velocity of each
+particle.</li>
+<li>Use the the new velocity of each particle, and the defined
+time-step, to calculate a new position for each particle.</li>
+<li>Repeat ad nauseum.</li>
+</ol>
+<p>With the new particle positions, the cycle continues, one very small
+time-step at a time.</p>
+<figure><img src="../fig/MD.png" alt="Minimalistic representation of a 2D simulation of particles" class="figure mx-auto d-block"><div class="figcaption">Minimalistic representation of a 2D simulation
+of particles</div>
+</figure><p>With this in mind, we can take a look at a very simple example of a
+LAMMPS input file, <code>in.pour</code>, and discuss each command – and
+their related concepts – one by one. The order that the commands appear
+in <strong>can</strong> be important, depending on the exact details.
+Always refer to the <a href="lammps-manual">LAMMPS manual</a> to
+check.</p>
+<p>For this session, we’ll be looking at the
+<code>2-pour-exercise/in.pour</code> file in your <code>exercises</code>
+directory.</p>
+</section><section><h2 class="section-heading" id="simulation-setup">Simulation setup<a class="anchor" aria-label="anchor" href="#simulation-setup"></a>
+</h2>
+<hr class="half-width">
+<p>The first thing we have to do is chose a style of units. This can be
+achieved by the <code>units</code> command:</p>
+<pre><code>units         lj</code></pre>
+<p>LAMMPS has several different <a href="https://docs.lammps.org/units.html" class="external-link">unit styles</a>, useful in
+different types of simulations. In this example, we are using
+<code>lj</code>, or Lennard-Jones (LJ) units. These are dimensionless
+units, that are defined on the LJ potential parameters. They are
+computationally advantageous because they’re usually close to unity, and
+required less precise (lower number of bits) floating point variables –
+which in turn reduced the memory requirements, and increased calculation
+speed.</p>
+<p>The next line defines what style of <code>atoms</code> (LAMMPS’s
+terminology for particle) to use:</p>
+<pre><code>atom_style    sphere</code></pre>
+<p>The <a href="https://docs.lammps.org/atom_style.html" class="external-link">atom style</a>
+impacts on what attributes each atom has associated with it – this
+cannot be changed during a simulation. Every style stores: coordinates,
+velocities, atom IDs, and atom types. The <code>sphere</code> style also
+stores radius, mass, omega, and torque for each particle. Other styles
+will store additional, or different, information.</p>
+<p>We then define the number of dimensions in our system:</p>
+<pre><code>dimension     3</code></pre>
+<p>LAMMPS is also capable of simulating two-dimensional systems.</p>
+<p>The boundary command sets the styles for the boundaries for the
+simulation box.</p>
+<pre><code>boundary      p p f</code></pre>
+<p>Each of the three letters after the keyword corresponds to a
+direction (x, y, z), and <code>p</code> means that the selected boundary
+is to be periodic, while <code>f</code> means it’s fixed, that is,
+LAMMPS won’t generate periodic images accross this dimension, and
+particles won’t be able to go accross the limits of the simulation box
+accross this dimension. Other boundary conditions are available
+(shrink-wrapped, and shrink-wrapped with minimum).</p>
+<figure><img src="../fig/PBC.png" alt="Periodic boundary conditions" class="figure mx-auto d-block"><div class="figcaption">Periodic boundary conditions</div>
+</figure><p>Periodic boundary conditions (PBCs) allow the approximation of an
+infinite system by simulating only a small part, a unit-cell. The most
+common shapes of (3D) unit-cell is cuboidal, but any shape that
+completely tessellates 3D space can be used. The topology of PBCs is
+such that a particle leaving one side of the unit cell, it reappears on
+the other side. A 2D map with PBC could be perfectly mapped to a
+torus.</p>
+<p>Another key aspect of using PBCs is the use of the
+<strong>minimum-image convention</strong> for calculating interactions
+between particles. This guarantees that each particle interacts only
+with the closest <em>image</em> of another particle, no matter with
+unit-cell (the original simulation box or one of the periodic images) it
+belongs to.</p>
+<p>Granular interactions depend on the velocity of neighbouring
+particles, so we need to setup LAMMPS to communicate the velocities of
+“ghost” particles between processors:</p>
+<pre><code>comm_modify     vel yes</code></pre>
+<p>The region command defines a geometric region in space.</p>
+<pre><code>region          reg block -20 20 -20 20 0 40</code></pre>
+<p>The arguments are <code>box</code>, a name we give to the region,
+<code>block</code>, the type of region (cuboid), and the numbers are the
+min and max values for x, y, and z.</p>
+<p>We then create a box with two “atom” types, using the region we
+defined previously</p>
+<pre><code>create_box      2 reg</code></pre>
+<div class="section level3">
+<h3 id="inter-particle-interactions">Inter-particle interactions<a class="anchor" aria-label="anchor" href="#inter-particle-interactions"></a>
+</h3>
+<p>Now that we have a simulation box, we have to define how particles
+will interact with each-other once we start adding them to the box.</p>
+<p>The first line in this section defines the style of interaction our
+particles will use.</p>
+<pre><code>pair_style  granular</code></pre>
+<p>LAMMPS has a large number of <a href="https://docs.lammps.org/pair_style.html" class="external-link">pairwise interparticle
+interactions</a> available. In this case, we are using the granular pair
+style, which supports a number of options for normal, tangential,
+rolling, and twisting forces that result from the contact between
+particles that need to be setup, using the commands:</p>
+<pre><code>pair_coeff      1 * jkr 1000.0 50.0 0.3 10 tangential mindlin 800.0 1.0 0.5 rolling sds 500.0 200.0 0.5 twisting marshall
+pair_coeff      2 2 hertz 200.0 20.0 tangential linear_history 300.0 1.0 0.1 rolling sds 200.0 100.0 0.1 twisting marshall</code></pre>
+</div>
+<div class="section level3">
+<h3 id="neighbour-lists">Neighbour lists<a class="anchor" aria-label="anchor" href="#neighbour-lists"></a>
+</h3>
+<p>To improve simulation performance, and because we are truncating
+interactions at a certain distance, we can keep a list of particles that
+are close to each other (under a neighbour cutoff distance). This
+reduces the number of comparisons needed per time-step, at the cost of a
+small amount of memory.</p>
+<p>{% include figure.html url=“” max-width=“30%”
+file=“/fig/2_MD-primer/cutoff.png” alt=“Neighbour lists” %}</p>
+<p>We can set our neighbour list cutoff to be 0.3σ greater than the
+default cutoff – remember that, as we are dealing with spheres, a small
+increase in radius results can result in a large volume increase.</p>
+<p>The <code>bin</code> keyword refers to the algorithm used to build
+the list, <code>bin</code> is the best performing algorithm for systems
+with homogeneous sizes of particles, but there are <a href="https://docs.lammps.org/neighbor.html" class="external-link">others</a>.</p>
+<pre><code>neighbor        0.3 bin</code></pre>
+<p>These lists still need to be updated periodically. Provided that we
+rebuild them more frequently than the minimum time it takes for a
+particle to move from within the neighbour cutoff to outside of it. We
+use the <code>neigh_modify</code> command to set the wait time between
+each neighbour list rebuild:</p>
+<pre><code>neigh_modify    delay 10 every 1</code></pre>
+<p>The <code>delay</code> parameter sets the minimum number of
+time-steps that need to pass since the last neighbour list rebuild for
+LAMMPS to even consider rebuilding it again. The <code>every</code>
+parameter tells LAMMPS to attempt to build the neighbour list if the
+number of timesteps since the delay ended is equal to the
+<code>every</code> value – by default, the rebuild will only be
+triggered if an atom has moved more than half the neighbour skin
+distance (the 0.3 above).</p>
+<div id="how-to-set-neighbour-list-delays" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="how-to-set-neighbour-list-delays" class="callout-inner">
+<h3 class="callout-title">How to set neighbour list delays?</h3>
+<div class="callout-content">
+<p>You can estimate the frequency at which you need to rebuild neighbour
+lists by running a quick simulation with neighbour list rebuilds every
+timestep:</p>
+<div class="codewrapper sourceCode" id="cb12">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">neigh_modify</span>    delay 0 every 1 check yes</span></code></pre>
+</div>
+<p>and looking at the resultant LAMMPS neighbour list information in the
+log file generated by that run.</p>
+<p>The Neighbour list builds tells you how often neighbour lists needed
+to be rebuilt. If you know how many timesteps your short simulation ran
+for, you can estimate the frequency at which you need to calculate
+neighbour lists by working out how many steps there are per rebuild on
+average. Provided that your update frequency is less than or equal to
+that, you should see a speed up.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="simulation-parameters">Simulation parameters<a class="anchor" aria-label="anchor" href="#simulation-parameters"></a>
+</h3>
+<p>Now that we’ve set up the initial conditions for the simulation, and
+changed some settings to make sure it runs a bit faster, all that is
+left is telling LAMMPS exactly how we want the simulation to be run.
+This includes, but is not limited to, what ensemble to use (and which
+particles to apply it to), how big the time-step is, how many time-steps
+we want to simulate, what properties we want as output, and how often we
+want those properties logged.</p>
+<p>The <code>fix</code> command has a <a href="https://docs.lammps.org/fix.html" class="external-link">myriad of options</a>, most of
+them related to ‘setting’ certain properties at a value, or in an
+interval of values for one, all, or some particles in the
+simulation.</p>
+<p>The first keywords are always <code>ID</code> – a name to reference
+the fix by, and <code>group-ID</code> – which particles to apply the
+command to. The most common option for the second keyword is
+<code>all</code>.</p>
+<pre><code>fix             1 all nve/sphere</code></pre>
+<p>Then we have the styles plus the arguments. In the case above, the
+style is <code>nve/sphere</code>, and there are no arguments.</p>
+<p>Next, we enable gravity on our simulation:</p>
+<pre><code>fix             grav all gravity 9.8 vector 0 0 -1</code></pre>
+</div>
+<div class="section level3">
+<h3 id="pouring-particles">Pouring particles<a class="anchor" aria-label="anchor" href="#pouring-particles"></a>
+</h3>
+<p>To pour particles into our box, we need to setup a region where
+particles can appear. We can create two cylindrical regions with the
+commands:</p>
+<pre><code>region          cyl1 cylinder z -10  9 10 20 35
+region          cyl2 cylinder z  10 -9 10 20 35</code></pre>
+<p>Here, the parameters after <code>cylinder</code> are: the direction
+of the axis of the cylinder, the coordinates of the axis in the other
+two dimensions, the radius, and the low- and high- coordinate along the
+axis of the cylinder faces.</p>
+<p>Then, we use the <code>fix pour</code> command to create particles in
+our simulation box.</p>
+<pre><code>#               ID   group-id style n_part type seed kw     region_id kw   d_style min_diam max_diam kw   min_dens max_dens
+fix             ins1 all      pour  10000  1    3123 region cyl1      diam range   0.5      1        dens 1.0      1.0
+fix             ins2 all      pour  10000  2    4567 region cyl2      diam range   0.5      1        dens 1.0      1.0</code></pre>
+<p>Finally, we setup the properties of our bottom wall:</p>
+<pre><code>fix             2 all wall/gran granular hertz/material 1e5 1e3 0.3 tangential mindlin NULL 1.0 0.5 zplane 0 NULL</code></pre>
+</div>
+<div class="section level3">
+<h3 id="final-setup">Final setup<a class="anchor" aria-label="anchor" href="#final-setup"></a>
+</h3>
+<p>To have a valid simulation setup, we need to set the size of the
+time-step, in whatever units we have chosen for this simulation – in
+this case, LJ units.</p>
+<pre><code>timestep      0.001</code></pre>
+<p>The size of the time-step is a careful juggling of speed and
+accuracy. A small time-step guarantees that no particle interactions are
+missing, at the cost of a lot of computation time. A large time-step
+allows for simulations that probe effects at longer time scales, but
+risks a particle moving so much in each time-step, that some
+interactions are missed – in extreme cases, some particles can ‘fly’
+right through each other. The ‘happy medium’ depends on the system type,
+size, and other variables.</p>
+<p>The next line sets what thermodynamic information we want LAMMPS to
+output to the terminal and the log file.</p>
+<pre><code>thermo_style  custom step atoms</code></pre>
+<p>There are several default styles, and the <code>custom</code> style
+allows for full customisation of which fields and in which order to
+write them.</p>
+<p>In MD simulations (LAMMPS original use-case), losing an atom during
+the simulation is a catastrophic mistake, so by default LAMMPS
+terminates any simulation that looses particles with an error. To change
+this behaviour for DEM simulations, use the <code>thermo_modify</code>
+command:</p>
+<pre><code>thermo_modify   lost ignore</code></pre>
+<p>To set the frequency (in time-steps) at which these results are
+output, you can vary the <code>thermo</code> command:</p>
+<pre><code>thermo        100</code></pre>
+<p>In this case, an output will be printed every 100 time-steps.</p>
+<p>We can then select how to output the output trajectory files, we give
+here two distinct options for different visualisation programs:</p>
+<pre><code># for Ovito:
+dump            1 all custom 100 dump.pour id type radius mass x y z
+# for VTK:
+dump            2 all vtk 100 pour*.vtk id type radius mass x y z
+dump_modify     2 binary yes</code></pre>
+<div id="nb---using-vtk" class="callout caution">
+<div class="callout-square">
+<i class="callout-icon" data-feather="alert-triangle"></i>
+</div>
+<span class="callout-header">Caution</span>
+<div id="nb---using-vtk" class="callout-inner">
+<h3 class="callout-title">NB - Using VTK</h3>
+<div class="callout-content">
+<p>For LAMMPS to be able to output in the VTK format, the executable
+being used needs to have been compiled with the VTK package support.
+This requires the system being used to have the VTK library installed.
+The current version of LAMMPS on ARCHER2 does <em>not</em> have VTK
+support.</p>
+</div>
+</div>
+</div>
+<p>And finally, we choose how many time-steps (<strong>not
+time-units</strong>) to run the simulation for:</p>
+<pre><code>run           10000</code></pre>
+<div id="run-pour-simulation" class="callout challenge">
+<div class="callout-square">
+<i class="callout-icon" data-feather="zap"></i>
+</div>
+<span class="callout-header">Challenge</span>
+<div id="run-pour-simulation" class="callout-inner">
+<h3 class="callout-title">Run pour simulation</h3>
+<div class="callout-content">
+<p>What command does it take to submit the simulation to the ARCHER2
+queue? What was the output?</p>
+</div>
+</div>
+</div>
+<div id="accordionSolution1" class="accordion challenge-accordion accordion-flush">
+<div class="accordion-item">
+<button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
+  <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
+</button>
+<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div class="accordion-body">
+<div class="codewrapper sourceCode" id="cb24">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="ex">sbatch</span> sub.slurm</span></code></pre>
+</div>
+<p>We will inspect the logfile in detail on the next session.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="keypoints1" class="callout keypoints">
+<div class="callout-square">
+<i class="callout-icon" data-feather="key"></i>
+</div>
+<span class="callout-header">Key Points</span>
+<div class="callout-inner">
+<div class="callout-content">
+<ul>
+<li>“LAMMPS can simulate systems of many particles that are allowed to
+interact, using any of a number of contact models.”</li>
+<li>“A LAMMPS input file is a an ordered collection of commands with
+both mandatory and optional arguments.”</li>
+<li>“To successfully run a LAMMPS simulation, an input file needs to
+cover basic simulation setup, read/create a system topology,
+force-field, and type/frequency of outputs.”</li>
+</ul>
+</div>
+</div>
+</div>
+<!--
+Place links that you need to refer to multiple times across pages here. Delete
+any links that you are not going to use.
+ -->
+</div>
 </section></section>
 </div>
     </main>

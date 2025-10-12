@@ -69,6 +69,7 @@ episodes:
 - 00-welcome.Rmd
 - 01-connecting.Rmd
 - 02-lammps-on-archer2.Rmd
+- 03-simulation-setup.Rmd
 
 # Information for Learners
 learners: 
