@@ -16,6 +16,12 @@
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/03-simulation-setup.html</loc>
   </url>
   <url>
+    <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/04-understanding-logfile.html</loc>
+  </url>
+  <url>
+    <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/05-advanced-io-commands.html</loc>
+  </url>
+  <url>
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/404.html</loc>
   </url>
   <url>
@@ -47,6 +53,12 @@
   </url>
   <url>
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/03-simulation-setup.html</loc>
+  </url>
+  <url>
+    <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/04-understanding-logfile.html</loc>
+  </url>
+  <url>
+    <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/05-advanced-io-commands.html</loc>
   </url>
   <url>
     <loc>https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/404.html</loc>
