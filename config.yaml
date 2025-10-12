@@ -74,6 +74,7 @@ episodes:
 - 05-advanced-io-commands.Rmd
 - 06-lammps-performance.Rmd
 - 07-compile.Rmd
+- 08-lammps-python.Rmd
 
 # Information for Learners
 learners: 
