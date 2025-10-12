@@ -31,8 +31,15 @@ you may struggle to run the course exercises as these were designed to run on AR
 
 The ARCHER2 login address is
 
-```bash
+```
 login.archer2.ac.uk
+```
+
+To login using ssh, use the command:
+
+
+```bash
+ssh username@login.archer2.ac.uk
 ```
 
 Access to ARCHER2 is via SSH using **both** a password and a passphrase-protected SSH key pair.
