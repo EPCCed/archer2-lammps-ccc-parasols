@@ -8,4 +8,4 @@ any links that you are not going to use.
 [rstudio]: https://www.rstudio.com/
 [carpentries-workbench]: https://carpentries.github.io/sandpaper-docs/
 [carpentries]: https://carpentries.org
-
+[archer2-coc]: https://www.archer2.ac.uk/training/code-of-conduct/
