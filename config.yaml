@@ -72,6 +72,7 @@ episodes:
 - 03-simulation-setup.Rmd
 - 04-understanding-logfile.Rmd
 - 05-advanced-io-commands.Rmd
+- 06-lammps-performance.Rmd
 
 # Information for Learners
 learners: 
