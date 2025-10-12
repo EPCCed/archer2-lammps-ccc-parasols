@@ -18,13 +18,6 @@ exercises: 0
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
-:::::::::::::::::::::::::::::::::::::: keypoints
-
-- "The course will be flexible to best meet the learning needs of the attendees."
-- "Feedback is an essential part of our training to allow us to continue to improve and make sure the course is as useful as possible to attendees."
-
-::::::::::::::::::::::::::::::::::::::::::::::::
-
 ## Course structure and method
 
 Rather than having separate lectures and practical sessions, this course is taught following [The Carpentries methodology][carpentries]
@@ -76,3 +69,10 @@ how the upcoming material/schedule will be changed to address the feedback.
 
 Finally, you will be provided with the opportunity to provide feedback on the course after it has finished.
 We welcome all this feedback, both good and bad, as this information in key to allow us to continually improve the training we offer.
+
+:::::::::::::::::::::::::::::::::::::: keypoints
+
+- "The course will be flexible to best meet the learning needs of the attendees."
+- "Feedback is an essential part of our training to allow us to continue to improve and make sure the course is as useful as possible to attendees."
+
+::::::::::::::::::::::::::::::::::::::::::::::::
