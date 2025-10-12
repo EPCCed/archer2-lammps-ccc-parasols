@@ -289,6 +289,10 @@ The simulation takes almost the same amount of time when running on a single cor
 A more detailed look into the `in.ethanol` file will reveal that this is because the simulation box is not uniformly packed.
 We won't go into all the details in this course, but we do cover most of the available optimisations in the advanced course.
 
+::::::::::::::::::::::::::::::::::::::::
+
+::::::::::::::::::::::::::::::::::::::::::::::::
+
 :::::::::::::::::::::::::::::::::::::::: callout
 
 ## Note
