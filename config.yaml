@@ -70,6 +70,8 @@ episodes:
 - 01-connecting.Rmd
 - 02-lammps-on-archer2.Rmd
 - 03-simulation-setup.Rmd
+- 04-understanding-logfile.Rmd
+- 05-advanced-io-commands.Rmd
 
 # Information for Learners
 learners: 
