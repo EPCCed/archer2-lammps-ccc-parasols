@@ -36,7 +36,7 @@ If you have useful information to share with the class then please do add it to 
 At the end of the course, we take a copy of the information in the etherpad, remove any personally-identifiable information,
 and post this on the course archive page so you should always be able to come back and find any information you found useful.
 
-::::::::::::::::::::::::::::::::::::: challenge 
+::::::::::::::::::::::::::::::::::::: challenge
 
 ## Introductions
 

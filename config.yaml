@@ -67,6 +67,7 @@ contact: 'r.apostolo@epcc.ed.ac.uk'
 # Order of episodes in your lesson
 episodes: 
 - 00-welcome.Rmd
+- 01-connecting.Rmd
 
 # Information for Learners
 learners: 
