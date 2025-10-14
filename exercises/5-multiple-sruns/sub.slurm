@@ -25,8 +25,9 @@ for i in $(seq 0 6)
 do
   cores=$((2**$i))
   echo "Running seq ${i}: ${cores} cpu cores"
-  srun --nodes=1 --ntasks=${cores} --ntasks-per-node=${cores} --cpus-per-task=1 --exact \
-	  --mem=$((${cores}*1500))M lmp -i in.ethanol -l log.${cores}_cores &
+  srun --nodes=1 --ntasks=${cores} --ntasks-per-node=${cores} \
+    --cpus-per-task=1 --exact --mem=$((${cores}*1500))M \
+    lmp -i in.ethanol -l log.${cores}_cores -var TEMPERATURE $((283 + 5 * $i)) &
 done
 
 # wait for all jobs to finish
