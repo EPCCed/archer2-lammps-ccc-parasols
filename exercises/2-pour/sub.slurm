@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #SBATCH --job-name=lmp_ex2
 #SBATCH --nodes=1
 #SBATCH --time=0:10:0
