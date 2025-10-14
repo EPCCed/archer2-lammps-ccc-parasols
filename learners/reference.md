@@ -1,6 +1,8 @@
 ---
-title: 'Glossary'
+title: 'Reference'
 ---
+
+## Glossary
 
 CLI
 : Command Line Interface, also referred to as Terminal, Shell  
