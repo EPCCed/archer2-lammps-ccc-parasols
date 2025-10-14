@@ -2,7 +2,7 @@
 #                             Variable to change                                 #
 ##################################################################################
 
-variable        TEMPERATURE equal    300.0  # Temperature in K
+variable        TEMPERATURE index    300.0  # Temperature in K
 variable        PRESSURE    equal     10.0  # Pressure in atm 
 variable        TIMESTEP    equal      1.0  # dt in fs
 variable        NEIGH_TIME  equal      1    # neigh_modify every x dt
