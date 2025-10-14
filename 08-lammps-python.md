@@ -63,8 +63,8 @@ and it can often be difficult to trace back errors and attribute them correctly 
 
 :::::::::::::::::::::::::::::::::::::::: callout
 
-> The LAMMPS python module has a number of other features and variables that can be called to improve your use of LAMMPS through Python.
-> You can find more information about this in the [LAMMPS manual](https://docs.lammps.org/Python_module.html).
+The LAMMPS python module has a number of other features and variables that can be called to improve your use of LAMMPS through Python.
+You can find more information about this in the [LAMMPS manual](https://docs.lammps.org/Python_module.html).
 
 ::::::::::::::::::::::::::::::::::::::::::::::::
 

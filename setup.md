@@ -7,12 +7,13 @@ the data sets the Learner needs to have installed.
 
 ## Data Sets
 
-<!--
-FIXME: place any data you want learners to use in `episodes/data` and then use
-       a relative link ( [data zip file](data/lesson-data.zip) ) to provide a
-       link to it, replacing the example.com link.
--->
-Download the [data zip file](https://example.com/FIXME) and unzip it to your Desktop
+We will only be using the exercises contained in the [exercise folder on the github](https://github.com/epcced/archer2-lammps-ccc-parasols/tree/main/exercises).
+
+You can download the exercises directly on the command line (on an operating system that supports `wget` and `tar`) with:
+
+```
+wget -O - https://github.com/EPCCed/archer2-lammps-ccc-parasols/archive/main.tar.gz | tar -xz --strip=2 "archer2-lammps-ccc-parasols-main/exercises"
+```
 
 ## Software Setup
 
@@ -20,10 +21,10 @@ Download the [data zip file](https://example.com/FIXME) and unzip it to your Des
 
 ### Details
 
-Setup for different systems can be presented in dropdown menus via a `spoiler`
-tag. They will join to this discussion block, so you can give a general overview
-of the software used in this lesson here and fill out the individual operating
-systems (and potentially add more, e.g. online setup) in the solutions blocks.
+We recommend the use of a \*NIX system, such as any Linux distribution, or MacOS.
+If you have a windows laptop, consider installing Windows Subsystems for Linux
+-- a Microsoft application that runs a Linux VM natively on Windows.
+Couple it with Windows Terminal for best results
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::
 
@@ -31,7 +32,14 @@ systems (and potentially add more, e.g. online setup) in the solutions blocks.
 
 ### Windows
 
-Use PuTTY
+Use WSL if possible, MobaXTerm as an alternative
+-- although you might not be able to do the compilation exercise in that case
+
+To install the Windows Terminal, search for "Windows Terminal" on the Microsoft Store App.
+
+To install WSL, search for "Ubuntu 24.04" on the Microsoft Store App, and follow the instructions (you will need to run a command on the terminal and reboot your sytem).
+
+In-detail instructions [here](https://learn.microsoft.com/en-us/windows/wsl/install).
 
 ::::::::::::::::::::::::
 
@@ -48,7 +56,7 @@ Use Terminal.app
 
 ### Linux
 
-Use Terminal
+Use any Terminal emulator.
 
 ::::::::::::::::::::::::
 
