@@ -2,9 +2,6 @@
 title: Setup
 ---
 
-FIXME: Setup instructions live in this document. Please specify the tools and
-the data sets the Learner needs to have installed.
-
 ## Data Sets
 
 We will only be using the exercises contained in the [exercise folder on the github](https://github.com/epcced/archer2-lammps-ccc-parasols/tree/main/exercises).
