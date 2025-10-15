@@ -147,7 +147,7 @@ To improve simulation performance, and because we are truncating interactions at
 we can keep a list of particles that are close to each other (under a neighbour cutoff distance).
 This reduces the number of comparisons needed per time-step, at the cost of a small amount of memory.
 
-{% include figure.html url="" max-width="30%" file="/fig/2_MD-primer/cutoff.png" alt="Neighbour lists" %}
+![Neighbour lists](fig/cutoff.png){alt="Neighbour lists"}
 
 We can set our neighbour list cutoff to be 0.3σ greater than the default cutoff
 -- remember that, as we are dealing with spheres, a small increase in radius results can result in a large volume increase.
