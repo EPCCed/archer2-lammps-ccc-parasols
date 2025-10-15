@@ -41,10 +41,7 @@ The thermodynamic data, which we setup with the `thermo` and `thermo_style` comm
 ```
 
 At the start, we get a header with the column names, and then a line for each time-step that's a multiple of the value we set `thermo` to.
-In this example, we're running an NVT simulation, so we've fixed the number of particles,
-the volume and dimensions of the simulation box, and the temperature
--- we can see from the logfile that `Volume` and `Density` remain constant (but not `Temp`).
-This would change if we used a different ensemble.
+In this example we can see the number of particle change as the simulation progresses.
 At the end of each `run` command, we get the analysis of how the simulation time is spent:
 
 ```
