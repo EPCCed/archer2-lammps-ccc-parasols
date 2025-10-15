@@ -353,7 +353,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Understanding the logfile</h1>
-        <p>Last updated on 2025-10-12 |
+        <p>Last updated on 2025-10-15 |
 
         <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/04-understanding-logfile.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -411,13 +411,10 @@ following (truncated) output:</p>
        400        3402</code></pre>
 <p>At the start, we get a header with the column names, and then a line
 for each time-step that’s a multiple of the value we set
-<code>thermo</code> to. In this example, we’re running an NVT
-simulation, so we’ve fixed the number of particles, the volume and
-dimensions of the simulation box, and the temperature – we can see from
-the logfile that <code>Volume</code> and <code>Density</code> remain
-constant (but not <code>Temp</code>). This would change if we used a
-different ensemble. At the end of each <code>run</code> command, we get
-the analysis of how the simulation time is spent:</p>
+<code>thermo</code> to. In this example we can see the number of
+particle change as the simulation progresses. At the end of each
+<code>run</code> command, we get the analysis of how the simulation time
+is spent:</p>
 <pre><code>Loop time of 27.0361 on 128 procs for 10000 steps with 20000 atoms
 
 Performance: 31957.239 tau/day, 369.875 timesteps/s, 7.398 Matom-step/s
@@ -623,8 +620,8 @@ any links that you are not going to use.
   "url": "https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/04-understanding-logfile.html",
   "identifier": "https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/04-understanding-logfile.html",
   "dateCreated": "2025-10-15",
-  "dateModified": "2025-10-12",
-  "datePublished": "2025-10-14"
+  "dateModified": "2025-10-15",
+  "datePublished": "2025-10-15"
 }
 
   </script><script>

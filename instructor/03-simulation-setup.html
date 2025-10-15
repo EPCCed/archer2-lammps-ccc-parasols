@@ -354,7 +354,7 @@
       </div>
       <hr></nav><main id="main-content" class="main-content"><div class="container lesson-content">
         <h1>Setting up a simulation in LAMMPS</h1>
-        <p>Last updated on 2025-10-12 |
+        <p>Last updated on 2025-10-15 |
 
         <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/03-simulation-setup.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 
@@ -505,9 +505,8 @@ interactions at a certain distance, we can keep a list of particles that
 are close to each other (under a neighbour cutoff distance). This
 reduces the number of comparisons needed per time-step, at the cost of a
 small amount of memory.</p>
-<p>{% include figure.html url=“” max-width=“30%”
-file=“/fig/2_MD-primer/cutoff.png” alt=“Neighbour lists” %}</p>
-<p>We can set our neighbour list cutoff to be 0.3σ greater than the
+<figure><img src="../fig/cutoff.png" alt="Neighbour lists" class="figure mx-auto d-block"><div class="figcaption">Neighbour lists</div>
+</figure><p>We can set our neighbour list cutoff to be 0.3σ greater than the
 default cutoff – remember that, as we are dealing with spheres, a small
 increase in radius results can result in a large volume increase.</p>
 <p>The <code>bin</code> keyword refers to the algorithm used to build
@@ -764,8 +763,8 @@ any links that you are not going to use.
   "url": "https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/03-simulation-setup.html",
   "identifier": "https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/03-simulation-setup.html",
   "dateCreated": "2025-10-15",
-  "dateModified": "2025-10-12",
-  "datePublished": "2025-10-14"
+  "dateModified": "2025-10-15",
+  "datePublished": "2025-10-15"
 }
 
   </script><script>
