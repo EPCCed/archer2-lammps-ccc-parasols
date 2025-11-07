@@ -1100,7 +1100,7 @@ explain this strange result?</p>
 <button class="accordion-button solution-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSolution1" aria-expanded="false" aria-controls="collapseSolution1">
   <h4 class="accordion-header" id="headingSolution1"> Show me the solution </h4>
 </button>
-<div id="collapseSolution1" class="accordion-collapse collapse" data-bs-parent="#accordionSolution1" aria-labelledby="headingSolution1">
+<div id="collapseSolution1" class="accordion-collapse collapse" aria-labelledby="headingSolution1" data-bs-parent="#accordionSolution1">
 <div class="accordion-body">
 <p>The simulation takes almost the same amount of time when running on a
 single core as when running on two cores. A more detailed look into the
@@ -2485,7 +2485,7 @@ any links that you are not going to use.
 </div>
 </div></section><section id="aio-07-compile"><p>Content from <a href="07-compile.html">Compiling LAMMPS</a></p>
 <hr>
-<p>Last updated on 2025-10-12 |
+<p>Last updated on 2025-11-07 |
 
         <a href="https://github.com/EPCCed/archer2-lammps-ccc-parasols/edit/main/episodes/07-compile.Rmd" class="external-link">Edit this page <i aria-hidden="true" data-feather="edit"></i></a></p>
 <p>Estimated time: <i aria-hidden="true" data-feather="clock"></i> 15 minutes</p>
@@ -2661,6 +2661,144 @@ repository:</p>
 </h3>
 <pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">LD_LIBRARY_PATH</span><span class="op">=</span>/path/to/install/lib:<span class="va">$LD_LIBRARY_PATH</span></span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span>/path/to/install/bin:<span class="va">$PATH</span></span></code></pre>
+</div>
+</div>
+</section><section><h2 class="section-heading" id="building-lammps-with-vtk-on-archer2">Building LAMMPS with VTK on ARCHER2<a class="anchor" aria-label="anchor" href="#building-lammps-with-vtk-on-archer2"></a>
+</h2>
+<hr class="half-width">
+<p>These instructions are for building LAMMPS version 13Feb2024, also
+known as 07Feb2024 update 1, on ARCHER2 using the Cray clang compilers
+15.0.2 // cpe 22.12 with support for VTK files.</p>
+<div class="section level3">
+<h3 id="path-setup">Path setup<a class="anchor" aria-label="anchor" href="#path-setup"></a>
+</h3>
+<div class="codewrapper sourceCode" id="cb8">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># base-path for download and source files</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">DWNLD_DIR</span><span class="op">=</span><span class="st">"/work/ta215/ta215/shared/download"</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="bu">export</span> <span class="va">INSTALL_DIR</span><span class="op">=</span><span class="st">"/work/ta215/ta215/shared/"</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="bu">export</span> <span class="va">LAMMPS_DWNLD</span><span class="op">=</span><span class="va">${DWNLD_DIR}</span>/lammps-2024-02-13</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="bu">export</span> <span class="va">LAMMPS_BUILD</span><span class="op">=</span><span class="va">${LAMMPS_DWNLD}</span>/build</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="bu">export</span> <span class="va">LAMMPS_INSTALL</span><span class="op">=</span><span class="va">${INSTALL_DIR}</span>/lammps</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="bu">export</span> <span class="va">VTK_DWNLD</span><span class="op">=</span><span class="va">${DWNLD_DIR}</span>/vtk</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="bu">export</span> <span class="va">VTK_BUILD</span><span class="op">=</span><span class="va">${VTK_DWNLD}</span>/build</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="bu">export</span> <span class="va">VTK_INSTALL</span><span class="op">=</span><span class="va">${INSTALL_DIR}</span>/vtk-9.5.2</span></code></pre>
+</div>
+</div>
+<div class="section level3">
+<h3 id="setup-your-environment">Setup your environment<a class="anchor" aria-label="anchor" href="#setup-your-environment"></a>
+</h3>
+<p>Load the correct modules:</p>
+<div class="codewrapper sourceCode" id="cb9">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="ex">module</span> load cpe/22.12</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="ex">module</span> load cray-fftw/3.3.10.3</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="ex">module</span> load cmake/3.21.3</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a><span class="ex">module</span> load cray-python</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="bu">export</span> <span class="va">LD_LIBRARY_PATH</span><span class="op">=</span><span class="va">$CRAY_LD_LIBRARY_PATH</span>:<span class="va">$LD_LIBRARY_PATH</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># create and source a virtual environment</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv <span class="at">--system-site-packages</span> <span class="va">${LAMMPS_INSTALL}</span>/venv/lammps-python-13-Feb-2024</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a><span class="bu">source</span> <span class="va">${LAMMPS_INSTALL}</span>/venv/lammps-python-13-Feb-2024/bin/activate</span></code></pre>
+</div>
+</div>
+<div class="section level3">
+<h3 id="download-and-compile-the-vtk-library">Download and compile the VTK library<a class="anchor" aria-label="anchor" href="#download-and-compile-the-vtk-library"></a>
+</h3>
+<div class="codewrapper sourceCode" id="cb10">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">${VTK_DWNLD}</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">${VTK_DWNLD}</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="fu">wget</span> https://vtk.org/files/release/9.5/VTK-9.5.2.tar.gz</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xvf</span> VTK-9.5.2.tar.gz</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">mv</span> VTK-9.5.2 source</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">${VTK_BUILD}</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="bu">cd</span> <span class="va">${VTK_BUILD}</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-DVTK_USE_MPI:BOOL</span><span class="op">=</span>ON <span class="at">-DVTK_SMP_IMPLEMENTATION_TYPE:STRING</span><span class="op">=</span>OpenMP <span class="at">-DCMAKE_BUILD_TYPE:STRING</span><span class="op">=</span>Release <span class="va">${VTK_DWNLD}</span>/source</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">--build</span> . <span class="at">-j8</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="fu">cp</span> <span class="at">-r</span> <span class="va">${VTK_DWNLD}</span> <span class="va">${VTK_INSTALL}</span></span></code></pre>
+</div>
+</div>
+<div class="section level3">
+<h3 id="download-lammps-1">Download LAMMPS<a class="anchor" aria-label="anchor" href="#download-lammps-1"></a>
+</h3>
+<p>Clone the latest stable version of LAMMPS from the GitHub
+repository:</p>
+<div class="codewrapper sourceCode" id="cb11">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$DWNLD_DIR</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">git</span> clone <span class="at">--depth</span><span class="op">=</span>1 <span class="at">--branch</span> patch_7Feb2024_update1 https://github.com/lammps/lammps.git <span class="va">${LAMMPS_DWNLD}</span></span></code></pre>
+</div>
+</div>
+<div class="section level3">
+<h3 id="regular-mpi-executable-and-python-wrappers-1">Regular MPI executable and python wrappers<a class="anchor" aria-label="anchor" href="#regular-mpi-executable-and-python-wrappers-1"></a>
+</h3>
+<p>Create and go into a build directory:</p>
+<div class="codewrapper sourceCode" id="cb12">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">${LAMMPS_BUILD}</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">${LAMMPS_BUILD}</span></span></code></pre>
+</div>
+<p>Build using:</p>
+<div class="codewrapper sourceCode" id="cb13">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">cmake</span> <span class="at">-C</span> ../cmake/presets/most.cmake                <span class="dt">\</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>      <span class="at">-D</span> BUILD_MPI=on                               <span class="dt">\</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>      <span class="at">-D</span> BUILD_SHARED_LIBS=yes                      <span class="dt">\</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>      <span class="at">-D</span> CMAKE_CXX_COMPILER=CC                      <span class="dt">\</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>      <span class="at">-D</span> CMAKE_CXX_FLAGS=<span class="st">"-O2"</span>                      <span class="dt">\</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>      <span class="at">-D</span> CMAKE_INSTALL_PREFIX=<span class="va">${LAMMPS_INSTALL}</span>     <span class="dt">\</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>      <span class="at">-D</span> FFT=FFTW3                                  <span class="dt">\</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>      <span class="at">-D</span> FFTW3_INCLUDE_DIR=<span class="va">${FFTW_INC}</span>              <span class="dt">\</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>      <span class="at">-D</span> FFTW3_LIBRARY=<span class="va">${FFTW_DIR}</span>/libfftw3_mpi.so  <span class="dt">\</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>      <span class="at">-D</span> PKG_MPIIO=yes                              <span class="dt">\</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>      <span class="at">-D</span> PKG_VTK=yes                                <span class="dt">\</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>      <span class="at">-D</span> VTK_DIR=<span class="va">${VTK_INSTALL}</span>                     <span class="dt">\</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>      ../cmake/</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="fu">make</span> <span class="at">-j</span> 8</span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="fu">make</span> install</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="fu">make</span> install-python</span></code></pre>
+</div>
+<div id="to-run-lammps-from-python" class="callout">
+<div class="callout-square">
+<i class="callout-icon" data-feather="bell"></i>
+</div>
+<span class="callout-header">Callout</span>
+<div id="to-run-lammps-from-python" class="callout-inner">
+<h3 class="callout-title">To run LAMMPS from python</h3>
+<div class="callout-content">
+<p><code>LD_PRELOAD</code> needs to be modified (this is done in the
+module file, but if running the text below without loading a module, it
+needs to be done explicitly):</p>
+<div class="codewrapper sourceCode" id="cb14">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">LD_PRELOAD</span><span class="op">=</span>/opt/cray/pe/lib64/libsci_cray_mp.so.5:<span class="va">$LD_PRELOAD</span></span></code></pre>
+</div>
+<div class="section level3">
+<h3 id="testing-lammps-from-python">Testing LAMMPS from python<a class="anchor" aria-label="anchor" href="#testing-lammps-from-python"></a>
+</h3>
+<div class="codewrapper sourceCode" id="cb15">
+<h3 class="code-label">BASH<i aria-hidden="true" data-feather="chevron-left"></i><i aria-hidden="true" data-feather="chevron-right"></i>
+</h3>
+<pre class="sourceCode bash" tabindex="0"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="ex">python</span> <span class="at">-i</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> import <span class="ex">lammps</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> lmp <span class="ex">=</span> lammps.lammps<span class="er">(</span><span class="kw">)</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="ex">LAMMPS</span> <span class="er">(</span><span class="ex">07</span> Feb 2024 <span class="at">-</span> Update 1<span class="kw">)</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="ex">OMP_NUM_THREADS</span> environment is not set. Defaulting to 1 thread. <span class="er">(</span><span class="ex">src/comm.cpp:98</span><span class="kw">)</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="ex">using</span> 1 OpenMP thread<span class="er">(</span><span class="ex">s</span><span class="kw">)</span> <span class="ex">per</span> MPI task</span></code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="keypoints1" class="callout keypoints">
 <div class="callout-square">
@@ -2854,8 +2992,8 @@ any links that you are not going to use.
   "url": "https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/aio.html",
   "identifier": "https://EPCCed.github.io/archer2-lammps-ccc-parasols/instructor/aio.html",
   "dateCreated": "2025-10-15",
-  "dateModified": "2025-11-04",
-  "datePublished": "2025-11-04"
+  "dateModified": "2025-11-07",
+  "datePublished": "2025-11-07"
 }
 
   </script><script>
